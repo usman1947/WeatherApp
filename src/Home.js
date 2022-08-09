@@ -164,7 +164,7 @@ export default class Home extends Component {
                     {Data.map((day,i) => {
                         return(i + this.state.firstCard < this.state.cardNum && (
                                 <Card className="card" key={i}>
-                                    <Card.Body className={i+this.state.firstCard === this.state.activeCard ? "cardactive":""} >
+                                    <Card.Body className={i+this.state.firstCard === this.state.activeCard ? "cardActive":""} >
                                         <Card.Text>
                                             Temp:
                                         </Card.Text>
@@ -190,8 +190,6 @@ export default class Home extends Component {
                         chartType="Bar"
                         loader={<div>Loading Chart</div>}
                         data={bar}
-                        // For tests
-                        rootProps={{ 'data-testid': '2' }}
                     />
                 </div>
             </div >
