@@ -160,7 +160,7 @@ export default class Home extends Component {
                         </div>
                     </IconContext.Provider>
                 </div>
-                <div className="cardsrow"> 
+                <div className="cardRow"> 
                     {Data.map((day,i) => {
                         return(i + this.state.firstCard < this.state.cardNum && (
                                 <Card className="card" key={i}>
