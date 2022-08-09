@@ -7,24 +7,6 @@ import Data from './data.json';
 import { Chart } from "react-google-charts";
 import { useEffect } from 'react';
 
-const apiData = true;
-let average = [0,0,0,0,0]
-let tempArray = []
-
-let bar = [
-            ["Time","Temperature"],
-            ["00:00",20],
-            ["03:00",23],
-            ["06:00",24],
-            ["09:00",25],
-            ["12:00",27],
-            ["15:00",22],
-            ["18:00",23],
-            ["21:00",20],
-
-            ]
-let tempType = "C"
-
 export const Home = () => {
 
     const [cardNum, setCardNum] = useState(3)
@@ -32,18 +14,35 @@ export const Home = () => {
     const [isC, setIsC] = useState(true)
     const [isF, setIsF] = useState(false)
     const [currentTemp, setCurrentTemp] = useState('C')
+    const [tempType, setTempType] = useState('C')
     const [activeCard, setActiveCard] = useState(0)
+    const [average, setAverage] = useState([0,0,0,0,0])
+    const [chartData, setChartData] = useState([
+        ["Time","Temperature"],
+        ["00:00",20],
+        ["03:00",23],
+        ["06:00",24],
+        ["09:00",25],
+        ["12:00",27],
+        ["15:00",22],
+        ["18:00",23],
+        ["21:00",20],
+
+        ])
 
     useEffect(() => {
-        Data?.forEach((data, i) => {
+        let tempArray = []
+        Data.forEach((data, i) => {
             let adder = 0
             for (let [key, value] of Object.entries(data)){
                 if (key !== "date")
                     adder = adder + value 
-            average[i] = adder/8
+
+            tempArray[i] = adder/8
             }
         })
-        handleBarShow(activeCard)
+        setAverage(tempArray)
+        handleBarShow(activeCard, tempType)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[Data])
 
@@ -58,7 +57,7 @@ export const Home = () => {
         }
         if(ac < 4){
             setActiveCard(ac+1)
-            handleBarShow(ac+1)
+            handleBarShow(ac+1, tempType)
         }
     }
 
@@ -73,35 +72,35 @@ export const Home = () => {
         }
         if(ac > 0){
             setActiveCard(ac-1)
-            handleBarShow(ac-1)
+            handleBarShow(ac-1, tempType)
         }
     }
 
-    function handleTempType(type){
-        if(type === "f" && currentTemp !== "F"){
-            for (let i = 0; i < 5; i++){
-                average[i] = average[i] * 9/5 + 32
-            }
-            tempType = "F"
-            handleBarShow(activeCard)
+    function handleTempType(){
+        let tempArray = []
+        if(currentTemp === "C"){
+            tempArray = average.map(a => a * 9/5 + 32)
             setIsC(false)
             setIsF(true)
             setCurrentTemp("F")
+            setTempType("F")
+            handleBarShow(activeCard, "F")
         }
-        else if(type === "c" && currentTemp !== "C"){
-            for (let i = 0; i < 5; i++){
-                average[i] = (average[i] - 32) * 5/9
-            }
-            tempType = "C"
-            handleBarShow(activeCard)
+        else{
+            
+            tempArray = average.map(a => (a - 32) * 5/9)
             setIsC(true)
             setIsF(false)
             setCurrentTemp("C")
+            setTempType("C")
+            handleBarShow(activeCard, "C")
         }
+        setAverage(tempArray)
     }
 
-    function handleBarShow(i){
-        tempArray = []
+    function handleBarShow(i, tempType){
+        let tempArray = []
+        let tempChartData = chartData
         for (let [key, value] of Object.entries(Data[i])){
             if (key !== "date")
                 tempArray.push(value) 
@@ -112,8 +111,9 @@ export const Home = () => {
             }
         }
         for(let k=1; k<9; k++){
-            bar[k][1] = tempArray[k-1]+tempType
+            tempChartData[k][1] = tempArray[k-1]+tempType
         }
+        setChartData([...tempChartData])
         setActiveCard(i)
     }
 
@@ -121,19 +121,16 @@ export const Home = () => {
         console.log("onValueChange")
     }
 
-    if (!apiData)
-        return <div className="App-header" >Loading ...</div>
-    
     return  <div className="App" >
             <form className="form">
                 <div className="radio">
                 <label>
                     <input
                     type="radio"
-                    value="Male"
+                    value="C"
                     checked={isC}
                     onChange={onValueChange}
-                    onClick={()=> handleTempType("c")}
+                    onClick={()=> handleTempType()}
                     />
                     Celsius
                 </label>
@@ -142,9 +139,9 @@ export const Home = () => {
                 <label>
                     <input
                     type="radio"
-                    value="Female"
+                    value="F"
                     checked={isF}
-                    onClick={()=> handleTempType("f")}
+                    onClick={()=> handleTempType()}
                     onChange={onValueChange}
                     />
                     Fahrenheit
@@ -192,7 +189,7 @@ export const Home = () => {
                     height={'500px'}
                     chartType="Bar"
                     loader={<div>Loading Chart</div>}
-                    data={bar}
+                    data={chartData}
                 />
             </div>
         </div>
