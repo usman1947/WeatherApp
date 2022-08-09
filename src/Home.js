@@ -132,7 +132,7 @@ export default class Home extends Component {
                         onChange={this.onValueChange}
                         onClick={()=> this.handleTempType("c")}
                         />
-                        Celcius
+                        Celsius
                     </label>
                     </div>
                     <div className="radio">
