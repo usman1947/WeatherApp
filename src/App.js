@@ -7,15 +7,11 @@ function App() {
     
   return (
       <Router>
-    
-
           <Switch>
               <Route exact path={`${process.env.PUBLIC_URL + "/"}`} component={Home} />
-
           </Switch>
       </Router>
   )
 }
-
 
 export default App;
