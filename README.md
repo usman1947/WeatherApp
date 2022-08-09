@@ -1,0 +1,1 @@
+Simply cd to the directory of the app and do npm i and then npm start. You can find the app running on your local host post 3000
