@@ -9,13 +9,12 @@ import { useEffect } from 'react';
 
 export const Home = () => {
 
-    const [cardNum, setCardNum] = useState(3)
-    const [firstCard, setFirstCard] = useState(0)
     const [isC, setIsC] = useState(true)
     const [isF, setIsF] = useState(false)
     const [currentTemp, setCurrentTemp] = useState('C')
     const [tempType, setTempType] = useState('C')
     const [activeCard, setActiveCard] = useState(0)
+    const [renderCards, setRenderCards] = useState([])
     const [average, setAverage] = useState([0,0,0,0,0])
     const [chartData, setChartData] = useState([
         ["Time","Temperature"],
@@ -27,7 +26,6 @@ export const Home = () => {
         ["15:00",22],
         ["18:00",23],
         ["21:00",20],
-
         ])
 
     useEffect(() => {
@@ -46,34 +44,22 @@ export const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[Data])
 
-    function handleCardUp(){
-        let cn = cardNum
-        let fc = firstCard
-        let ac = activeCard
+    useEffect(() => {
+        let renderedCards = [...Data]
+        const startIndex = (activeCard - 2) <= 0 ? 0 : (activeCard - 2)
+        setRenderCards(renderedCards.splice(startIndex, 3))
+    },[activeCard])
 
-        if (cn < 5){
-            setCardNum(cn + 1)
-            setFirstCard(fc+ 1)
-        }
-        if(ac < 4){
-            setActiveCard(ac+1)
-            handleBarShow(ac+1, tempType)
-        }
+    function handleNext(){
+        const newActiveCardIndex = ((activeCard+1) % Data.length)
+        setActiveCard(newActiveCardIndex)
+        handleBarShow(newActiveCardIndex, tempType)
     }
 
-    function handleCardDown(){
-        let cn = cardNum
-        let fc = firstCard
-        let ac = activeCard
-
-        if (cardNum > 3){
-            setCardNum(cn - 1)
-            setFirstCard(fc - 1)
-        }
-        if(ac > 0){
-            setActiveCard(ac-1)
-            handleBarShow(ac-1, tempType)
-        }
+    function handleBack(){
+        const newActiveCardIndex = activeCard - 1 < 0 ? Data.length - 1 : activeCard - 1
+        setActiveCard(newActiveCardIndex)
+        handleBarShow(newActiveCardIndex, tempType)
     }
 
     function handleTempType(){
@@ -150,36 +136,35 @@ export const Home = () => {
             </form>
             <div className="arrows">
                 <IconContext.Provider value={{ style: {fontSize: '100px', color: "#003153"}}}>
-                    <div onClick={() => handleCardDown()}>
+                    <div onClick={() => handleBack()}>
                         <ImArrowLeft />
                     </div>
                 </IconContext.Provider>
                 <IconContext.Provider value={{ style: {fontSize: '100px', color: "#003153"}}}>
-                    <div onClick={() => handleCardUp()}>
+                    <div onClick={() => handleNext()}>
                         <ImArrowRight />
                     </div>
                 </IconContext.Provider>
             </div>
             <div className="cardRow"> 
-                {Data.map((day,i) => {
-                    return(i + firstCard < cardNum && (
-                            <Card className="card" key={i}>
-                                <Card.Body className={i+firstCard === activeCard ? "cardActive":""} >
+                {renderCards.map((data) => {
+                    const index = Data.indexOf(data)
+                    return <Card className="card" key={index}>
+                                <Card.Body className={ index === activeCard ? "cardActive":"" } >
                                     <Card.Text>
                                         Temp:
                                     </Card.Text>
                                     <Card.Text>
-                                        {(average[i+firstCard]).toString()}
+                                        {(average[index]).toString()}
                                     </Card.Text>
                                     <Card.Text>
                                         Date:
                                     </Card.Text>
                                     <Card.Text>
-                                        {Data[i+firstCard].date}
+                                        {Data[index].date}
                                     </Card.Text>
                                 </Card.Body>
-                            </Card> )
-                    )
+                            </Card> 
                 })}
             </div>
     
