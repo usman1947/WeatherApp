@@ -47,7 +47,10 @@ export const Home = () => {
     useEffect(() => {
         let renderedCards = [...Data]
         const startIndex = (activeCard - 2) <= 0 ? 0 : (activeCard - 2)
-        setRenderCards(renderedCards.splice(startIndex, 3))
+        const activeCardIndexList = renderCards.map(card => Data.indexOf(card))
+        if (!activeCardIndexList.find(index => index === activeCard))
+            setRenderCards(renderedCards.splice(startIndex, 3))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[activeCard])
 
     function handleNext(){
