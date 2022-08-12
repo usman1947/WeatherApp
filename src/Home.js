@@ -10,7 +10,6 @@ import { useEffect } from 'react';
 export const Home = () => {
 
     const [isC, setIsC] = useState(true)
-    const [isF, setIsF] = useState(false)
     const [tempType, setTempType] = useState('C')
     const [activeCard, setActiveCard] = useState(0)
     const [renderCards, setRenderCards] = useState([])
@@ -65,22 +64,12 @@ export const Home = () => {
     }
 
     function handleTempType(){
-        let tempArray = []
-        if(tempType === "C"){
-            tempArray = average.map(a => a * 9/5 + 32)
-            setIsC(false)
-            setIsF(true)
-            setTempType("F")
-            handleBarShow(activeCard, "F")
-        }
-        else{
-            tempArray = average.map(a => (a - 32) * 5/9)
-            setIsC(true)
-            setIsF(false)
-            setTempType("C")
-            handleBarShow(activeCard, "C")
-        }
-        setAverage(tempArray)
+        const isActiveTempTypeC = tempType === "C"
+        const updatedType = isActiveTempTypeC ? "F" : "C"
+        setIsC(!isActiveTempTypeC)
+        setTempType(updatedType)
+        handleBarShow(activeCard, updatedType)
+        setAverage(isActiveTempTypeC ? average.map(a => a * 9/5 + 32) : average.map(a => (a - 32) * 5/9))
     }
 
     function handleBarShow(i, tempType){
@@ -125,7 +114,7 @@ export const Home = () => {
                     <input
                     type="radio"
                     value="F"
-                    checked={isF}
+                    checked={!isC}
                     onClick={()=> handleTempType()}
                     onChange={onValueChange}
                     />
