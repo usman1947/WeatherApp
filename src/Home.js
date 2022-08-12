@@ -11,7 +11,6 @@ export const Home = () => {
 
     const [isC, setIsC] = useState(true)
     const [isF, setIsF] = useState(false)
-    const [currentTemp, setCurrentTemp] = useState('C')
     const [tempType, setTempType] = useState('C')
     const [activeCard, setActiveCard] = useState(0)
     const [renderCards, setRenderCards] = useState([])
@@ -67,20 +66,17 @@ export const Home = () => {
 
     function handleTempType(){
         let tempArray = []
-        if(currentTemp === "C"){
+        if(tempType === "C"){
             tempArray = average.map(a => a * 9/5 + 32)
             setIsC(false)
             setIsF(true)
-            setCurrentTemp("F")
             setTempType("F")
             handleBarShow(activeCard, "F")
         }
         else{
-            
             tempArray = average.map(a => (a - 32) * 5/9)
             setIsC(true)
             setIsF(false)
-            setCurrentTemp("C")
             setTempType("C")
             handleBarShow(activeCard, "C")
         }
