@@ -15,7 +15,6 @@ export const Home = () => {
     const [renderCards, setRenderCards] = useState([])
     const [average, setAverage] = useState([0,0,0,0,0])
     const [chartData, setChartData] = useState([
-        ["Time","Temperature"],
         ["00:00",20],
         ["03:00",23],
         ["06:00",24],
@@ -38,7 +37,7 @@ export const Home = () => {
             }
         })
         setAverage(tempArray)
-        handleBarShow(activeCard, tempType)
+        handleChartData(activeCard, tempType)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[Data])
 
@@ -54,13 +53,13 @@ export const Home = () => {
     function handleNext(){
         const newActiveCardIndex = ((activeCard+1) % Data.length)
         setActiveCard(newActiveCardIndex)
-        handleBarShow(newActiveCardIndex, tempType)
+        handleChartData(newActiveCardIndex, tempType)
     }
 
     function handleBack(){
         const newActiveCardIndex = activeCard - 1 < 0 ? Data.length - 1 : activeCard - 1
         setActiveCard(newActiveCardIndex)
-        handleBarShow(newActiveCardIndex, tempType)
+        handleChartData(newActiveCardIndex, tempType)
     }
 
     function handleTempType(){
@@ -68,11 +67,11 @@ export const Home = () => {
         const updatedType = isActiveTempTypeC ? "F" : "C"
         setIsC(!isActiveTempTypeC)
         setTempType(updatedType)
-        handleBarShow(activeCard, updatedType)
+        handleChartData(activeCard, updatedType)
         setAverage(isActiveTempTypeC ? average.map(a => a * 9/5 + 32) : average.map(a => (a - 32) * 5/9))
     }
 
-    function handleBarShow(i, tempType){
+    function handleChartData(i, tempType){
         let tempArray = []
         let tempChartData = chartData
         for (let [key, value] of Object.entries(Data[i])){
@@ -84,8 +83,8 @@ export const Home = () => {
                 tempArray[i] = tempArray[i] * 9/5 + 32
             }
         }
-        for(let k=1; k<9; k++){
-            tempChartData[k][1] = tempArray[k-1]+tempType
+        for(let k=0; k<8; k++){
+            tempChartData[k][1] = tempArray[k]+tempType
         }
         setChartData([...tempChartData])
         setActiveCard(i)
@@ -162,7 +161,7 @@ export const Home = () => {
                     height={'500px'}
                     chartType="Bar"
                     loader={<div>Loading Chart</div>}
-                    data={chartData}
+                    data={[["Time","Temperature"], ...chartData]}
                 />
             </div>
         </div>
