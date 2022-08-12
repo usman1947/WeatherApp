@@ -14,16 +14,7 @@ export const Home = () => {
     const [activeCard, setActiveCard] = useState(0)
     const [renderCards, setRenderCards] = useState([])
     const [average, setAverage] = useState([0,0,0,0,0])
-    const [chartData, setChartData] = useState([
-        ["00:00",20],
-        ["03:00",23],
-        ["06:00",24],
-        ["09:00",25],
-        ["12:00",27],
-        ["15:00",22],
-        ["18:00",23],
-        ["21:00",20],
-        ])
+    const [chartData, setChartData] = useState()
 
     useEffect(() => {
         let tempArray = []
@@ -73,7 +64,7 @@ export const Home = () => {
 
     function handleChartData(i, tempType){
         let tempArray = []
-        let tempChartData = chartData
+        let tempChartData = [["00:00"], ["03:00"], ["06:00"], ["09:00"], ["12:00"], ["15:00"], ["18:00"],["21:00"]]
         for (let [key, value] of Object.entries(Data[i])){
             if (key !== "date")
                 tempArray.push(value) 
@@ -154,7 +145,7 @@ export const Home = () => {
                             </Card> 
                 })}
             </div>
-    
+            {chartData &&
             <div className="chart">
                 <Chart
                     width={'1000px'}
@@ -163,7 +154,7 @@ export const Home = () => {
                     loader={<div>Loading Chart</div>}
                     data={[["Time","Temperature"], ...chartData]}
                 />
-            </div>
+            </div>}
         </div>
     
 }
