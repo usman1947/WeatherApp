@@ -9,8 +9,12 @@ import { useEffect } from 'react';
 
 export const Home = () => {
 
+    class TemperatureTypeEnum {
+        static _C = "C";
+        static _F = "F";
+    }
     const [isC, setIsC] = useState(true)
-    const [tempType, setTempType] = useState('C')
+    const [tempType, setTempType] = useState(TemperatureTypeEnum._C)
     const [activeCard, setActiveCard] = useState(0)
     const [renderCards, setRenderCards] = useState([])
     const [average, setAverage] = useState()
@@ -50,8 +54,8 @@ export const Home = () => {
     }
 
     function handleTempType(){
-        const isActiveTempTypeC = tempType === "C"
-        const updatedType = isActiveTempTypeC ? "F" : "C"
+        const isActiveTempTypeC = tempType === TemperatureTypeEnum._C
+        const updatedType = isActiveTempTypeC ? TemperatureTypeEnum._F : TemperatureTypeEnum._C
         setIsC(!isActiveTempTypeC)
         setTempType(updatedType)
         handleChartData(activeCard, updatedType)
@@ -61,7 +65,7 @@ export const Home = () => {
     function handleChartData(activeDayIndex, tempType){
         let tempChartData = [["00:00"], ["03:00"], ["06:00"], ["09:00"], ["12:00"], ["15:00"], ["18:00"],["21:00"]]
         let tempValueArray = getTemperatureArray(Data[activeDayIndex])
-        if (tempType === "F")
+        if (tempType === TemperatureTypeEnum._F)
             tempValueArray = tempValueArray.map( temp =>  temp * 9/5 + 32)
         tempChartData = tempChartData.map( (time,index) => [...time, tempValueArray[index]+tempType])
         setChartData([...tempChartData])
