@@ -13,7 +13,7 @@ export const Home = () => {
     const [tempType, setTempType] = useState('C')
     const [activeCard, setActiveCard] = useState(0)
     const [renderCards, setRenderCards] = useState([])
-    const [average, setAverage] = useState([0,0,0,0,0])
+    const [average, setAverage] = useState()
     const [chartData, setChartData] = useState()
 
     useEffect(() => {
@@ -62,23 +62,16 @@ export const Home = () => {
         setAverage(isActiveTempTypeC ? average.map(a => a * 9/5 + 32) : average.map(a => (a - 32) * 5/9))
     }
 
-    function handleChartData(i, tempType){
-        let tempArray = []
+    function handleChartData(activeDayIndex, tempType){
         let tempChartData = [["00:00"], ["03:00"], ["06:00"], ["09:00"], ["12:00"], ["15:00"], ["18:00"],["21:00"]]
-        for (let [key, value] of Object.entries(Data[i])){
-            if (key !== "date")
-                tempArray.push(value) 
-        }
-        if (tempType === "F"){
-            for (let i = 0; i<8; i++){
-                tempArray[i] = tempArray[i] * 9/5 + 32
-            }
-        }
-        for(let k=0; k<8; k++){
-            tempChartData[k][1] = tempArray[k]+tempType
-        }
+        let dayTempData = {...Data[activeDayIndex]}
+        delete dayTempData.date
+        let tempValueArray = Object.values(dayTempData)
+        if (tempType === "F")
+            tempValueArray = tempValueArray.map( temp =>  temp * 9/5 + 32)
+        tempChartData = tempChartData.map( (time,i) => [...time, tempValueArray[i]+tempType])
         setChartData([...tempChartData])
-        setActiveCard(i)
+        setActiveCard(activeDayIndex)
     }
 
     function onValueChange(){
