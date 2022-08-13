@@ -69,13 +69,9 @@ export const Home = () => {
         let tempValueArray = Object.values(dayTempData)
         if (tempType === "F")
             tempValueArray = tempValueArray.map( temp =>  temp * 9/5 + 32)
-        tempChartData = tempChartData.map( (time,i) => [...time, tempValueArray[i]+tempType])
+        tempChartData = tempChartData.map( (time,index) => [...time, tempValueArray[index]+tempType])
         setChartData([...tempChartData])
         setActiveCard(activeDayIndex)
-    }
-
-    function onValueChange(){
-        console.log("onValueChange")
     }
 
     return  <div className="App" >
@@ -86,7 +82,7 @@ export const Home = () => {
                     type="radio"
                     value="C"
                     checked={isC}
-                    onChange={onValueChange}
+                    onChange={()=>{}}
                     onClick={()=> handleTempType()}
                     />
                     Celsius
@@ -99,7 +95,7 @@ export const Home = () => {
                     value="F"
                     checked={!isC}
                     onClick={()=> handleTempType()}
-                    onChange={onValueChange}
+                    onChange={()=>{}}
                     />
                     Fahrenheit
                 </label>
