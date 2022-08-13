@@ -17,17 +17,13 @@ export const Home = () => {
     const [chartData, setChartData] = useState()
 
     useEffect(() => {
-        let tempArray = []
-        Data.forEach((data, i) => {
-            let adder = 0
-            for (let [key, value] of Object.entries(data)){
-                if (key !== "date")
-                    adder = adder + value 
-
-            tempArray[i] = adder/8
-            }
-        })
-        setAverage(tempArray)
+        setAverage(
+            Data.map(data => {
+                let tempValueArray = getTemperatureArray(data)
+                const sum = tempValueArray.reduce((partialSum, a) => partialSum + a, 0);
+                return sum / tempValueArray.length
+            })
+        )
         handleChartData(activeCard, tempType)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[Data])
@@ -64,14 +60,18 @@ export const Home = () => {
 
     function handleChartData(activeDayIndex, tempType){
         let tempChartData = [["00:00"], ["03:00"], ["06:00"], ["09:00"], ["12:00"], ["15:00"], ["18:00"],["21:00"]]
-        let dayTempData = {...Data[activeDayIndex]}
-        delete dayTempData.date
-        let tempValueArray = Object.values(dayTempData)
+        let tempValueArray = getTemperatureArray(Data[activeDayIndex])
         if (tempType === "F")
             tempValueArray = tempValueArray.map( temp =>  temp * 9/5 + 32)
         tempChartData = tempChartData.map( (time,index) => [...time, tempValueArray[index]+tempType])
         setChartData([...tempChartData])
         setActiveCard(activeDayIndex)
+    }
+
+    function getTemperatureArray(object){
+        let dayTempData = {...object}
+        delete dayTempData.date
+        return Object.values(dayTempData)
     }
 
     return  <div className="App" >
