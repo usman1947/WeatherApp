@@ -13,6 +13,7 @@ export const Home = () => {
         static _C = "C";
         static _F = "F";
     }
+    const TimeStampsForTemperature = [["00:00"], ["03:00"], ["06:00"], ["09:00"], ["12:00"], ["15:00"], ["18:00"],["21:00"]]
     const [isC, setIsC] = useState(true)
     const [tempType, setTempType] = useState(TemperatureTypeEnum._C)
     const [activeCard, setActiveCard] = useState(0)
@@ -63,12 +64,10 @@ export const Home = () => {
     }
 
     function handleChartData(activeDayIndex, tempType){
-        let tempChartData = [["00:00"], ["03:00"], ["06:00"], ["09:00"], ["12:00"], ["15:00"], ["18:00"],["21:00"]]
         let tempValueArray = getTemperatureArray(Data[activeDayIndex])
         if (tempType === TemperatureTypeEnum._F)
             tempValueArray = tempValueArray.map( temp =>  temp * 9/5 + 32)
-        tempChartData = tempChartData.map( (time,index) => [...time, tempValueArray[index]+tempType])
-        setChartData([...tempChartData])
+        setChartData([...TimeStampsForTemperature.map((time, index) => [...time, tempValueArray[index]+tempType])])
         setActiveCard(activeDayIndex)
     }
 
@@ -84,7 +83,7 @@ export const Home = () => {
                 <label>
                     <input
                     type="radio"
-                    value="C"
+                    value={TemperatureTypeEnum._C}
                     checked={isC}
                     onChange={()=>{}}
                     onClick={()=> handleTempType()}
@@ -96,7 +95,7 @@ export const Home = () => {
                 <label>
                     <input
                     type="radio"
-                    value="F"
+                    value={TemperatureTypeEnum._F}
                     checked={!isC}
                     onClick={()=> handleTempType()}
                     onChange={()=>{}}
