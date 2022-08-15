@@ -1,17 +1,8 @@
-
-
-
-.App-header {
-
-  min-height: 100vh;
+.app{
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-
+  width: 100%;
 }
-
 
 input[type=radio]{
   transform: scale(3);
@@ -20,54 +11,21 @@ input[type=radio]{
   background-color: #003153;
   color: white;
   cursor: pointer;
-
 }
 
 .form{
-  margin-top: 5%;
   display: flex;
-  flex-direction: row;
   justify-content: space-around;
+  width: 100%;
+  margin-top: 5%;
   font-size: 30px;
-
-  
 }
-/* 
-input[type='radio']:after {
-  width: 15px;
-  height: 15px;
-  border-radius: 15px;
-  top: -2px;
-  left: -1px;
-  position: relative;
-  background-color: #003153;
-  content: '';
-  display: inline-block;
-  visibility: visible;
-  border: 2px solid #003153;
-
-}
-
-input[type='radio']:checked:after {
-  width: 15px;
-  height: 15px;
-  border-radius: 15px;
-  top: -2px;
-  left: -1px;
-  position: relative;
-  background-color: white;
-  content: '';
-  display: inline-block;
-  visibility: visible;
-  border: 2px solid #003153;
-} */
 
 .arrows{
   display: flex;
   justify-content: space-between;
   margin: 10%;
   cursor: pointer;
-
 }
 
 .cardRow{
@@ -77,10 +35,9 @@ input[type='radio']:checked:after {
 }
 
 .card{
-  width: 18rem ;
+  width: 18rem;
   font-size: 35px;
   margin: 3%;
-
 }
 
 .chart{

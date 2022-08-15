@@ -77,9 +77,9 @@ export const Home = () => {
         return Object.values(dayTempData)
     }
 
-    return  <div className="App" >
+    return  <div className="app">
             <form className="form">
-                <div className="radio">
+                <div>
                 <label>
                     <input
                     type="radio"
@@ -91,7 +91,7 @@ export const Home = () => {
                     Celsius
                 </label>
                 </div>
-                <div className="radio">
+                <div>
                 <label>
                     <input
                     type="radio"
@@ -120,7 +120,7 @@ export const Home = () => {
                 {renderCards.map((data) => {
                     const index = Data.indexOf(data)
                     return <Card className="card" key={index}>
-                                <Card.Body className={ index === activeCard ? "cardActive":"" } >
+                                <Card.Body className={ index === activeCard && "cardActive" } >
                                     <Card.Text>
                                         Temp:
                                     </Card.Text>
