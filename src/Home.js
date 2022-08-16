@@ -13,6 +13,10 @@ export const Home = () => {
         static _C = "C";
         static _F = "F";
     }
+    class CardDirectionEnum {
+        static _NEXT = "Next";
+        static _BACK = "Back";
+    }
     const TimeStampsForTemperature = [["00:00"], ["03:00"], ["06:00"], ["09:00"], ["12:00"], ["15:00"], ["18:00"],["21:00"]]
     const [isC, setIsC] = useState(true)
     const [tempType, setTempType] = useState(TemperatureTypeEnum._C)
@@ -26,6 +30,7 @@ export const Home = () => {
 
     useEffect(() => {
         setAverage(
+            //calculating average temperature for each day
             Data.map(data => {
                 let tempValueArray = getTemperatureArray(data)
                 const sum = tempValueArray.reduce((partialSum, a) => partialSum + a, 0);
@@ -37,26 +42,34 @@ export const Home = () => {
     },[Data])
 
     useEffect(() => {
+        //only show one card if small screen
         if(isTabletOrMobile) 
             setRenderCards([Data[activeCard]])
         else {
-            let renderedCards = [...Data]
-            const startIndex = (activeCard - 2) <= 0 ? 0 : (activeCard - 2)
-            const activeCardIndexList = renderCards.map(card => Data.indexOf(card))
-            if (!activeCardIndexList.find(index => index === activeCard))
-                setRenderCards([...renderedCards.splice(startIndex, 3)])
+            const indexOfRenderedCards = renderCards.map(card => Data.indexOf(card))
+            //if active card is not rendered right now 
+            if (!indexOfRenderedCards.find(index => index === activeCard)){
+                let renderedCards = [...Data]
+                //given there are only 3 card rendered,
+                //finds the index of first rendered card based on active card
+                //if active card is first card then first card to render index is 0
+                //else first card to render index is active card - 2
+                const firstRenderedCard = (activeCard - 2) <= 0 ? 0 : (activeCard - 2)
+                //splice array at index of first rendered card
+                setRenderCards([...renderedCards.splice(firstRenderedCard, 3)])
+            }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[activeCard, isTabletOrMobile])
 
-    function handleNext(){
-        const newActiveCardIndex = ((activeCard+1) % Data.length)
-        setActiveCard(newActiveCardIndex)
-        handleChartData(newActiveCardIndex, tempType)
-    }
-
-    function handleBack(){
-        const newActiveCardIndex = activeCard - 1 < 0 ? Data.length - 1 : activeCard - 1
+    function handleBackAndNext(direction){
+        let newActiveCardIndex
+        if (direction === CardDirectionEnum._BACK){
+            //if active card is first one, start from the end 
+            newActiveCardIndex = activeCard - 1 < 0 ? Data.length - 1 : activeCard - 1
+        } else {
+            newActiveCardIndex = ((activeCard+1) % Data.length)
+        }
         setActiveCard(newActiveCardIndex)
         handleChartData(newActiveCardIndex, tempType)
     }
@@ -74,6 +87,7 @@ export const Home = () => {
         let tempValueArray = getTemperatureArray(Data[activeDayIndex])
         if (tempType === TemperatureTypeEnum._F)
             tempValueArray = tempValueArray.map( temp =>  getTempInF(temp))
+        //push temperature for each time stamp with type
         setChartData([...TimeStampsForTemperature.map((time, index) => [...time, tempValueArray[index]+tempType])])
         setActiveCard(activeDayIndex)
     }
@@ -114,12 +128,12 @@ export const Home = () => {
                     </form>
                     <div className="arrows">
                         <IconContext.Provider value={{ style: {fontSize: isTabletOrMobile ? '50px' :' 100px', color: "#003153"}}}>
-                            <div onClick={() => handleBack()}>
+                            <div onClick={() => handleBackAndNext(CardDirectionEnum._BACK)}>
                                 <ImArrowLeft />
                             </div>
                         </IconContext.Provider>
                         <IconContext.Provider value={{ style: {fontSize: isTabletOrMobile ? '50px' :' 100px', color: "#003153"}}}>
-                            <div onClick={() => handleNext()}>
+                            <div onClick={() => handleBackAndNext(CardDirectionEnum._NEXT)}>
                                 <ImArrowRight />
                             </div>
                         </IconContext.Provider>
