@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ImArrowRight, ImArrowLeft } from "react-icons/im"
 import { IconContext } from "react-icons"
 import { Card } from 'react-bootstrap';
 import './App.css'
 import Data from './data.json';
 import { Chart } from "react-google-charts";
-import { useEffect } from 'react';
 
 export const Home = () => {
 
@@ -20,6 +19,8 @@ export const Home = () => {
     const [renderCards, setRenderCards] = useState([])
     const [average, setAverage] = useState()
     const [chartData, setChartData] = useState()
+    function getTempInF(temp){ return  temp * 9/5 + 32}
+    function getTempInC(temp){ return  (temp - 32) * 5/9}
 
     useEffect(() => {
         setAverage(
@@ -60,13 +61,13 @@ export const Home = () => {
         setIsC(!isActiveTempTypeC)
         setTempType(updatedType)
         handleChartData(activeCard, updatedType)
-        setAverage(isActiveTempTypeC ? average.map(a => a * 9/5 + 32) : average.map(a => (a - 32) * 5/9))
+        setAverage(isActiveTempTypeC ? average.map(a => getTempInF(a)) : average.map(a => getTempInC(a)))
     }
 
     function handleChartData(activeDayIndex, tempType){
         let tempValueArray = getTemperatureArray(Data[activeDayIndex])
         if (tempType === TemperatureTypeEnum._F)
-            tempValueArray = tempValueArray.map( temp =>  temp * 9/5 + 32)
+            tempValueArray = tempValueArray.map( temp =>  getTempInF(temp))
         setChartData([...TimeStampsForTemperature.map((time, index) => [...time, tempValueArray[index]+tempType])])
         setActiveCard(activeDayIndex)
     }
@@ -138,11 +139,10 @@ export const Home = () => {
                 })}
             </div>
             {chartData &&
-            <div className="chart">
+            <div className="chart-container">
                 <Chart
-                    width={'1000px'}
-                    height={'500px'}
                     chartType="Bar"
+                    className="chart"
                     loader={<div>Loading Chart</div>}
                     data={[["Time","Temperature"], ...chartData]}
                 />
