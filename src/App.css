@@ -41,11 +41,42 @@ input[type=radio]{
 }
 
 .chart{
-  margin: 10%;
   display: flex;
   justify-content: center;
+  width: 80%;
+  height: 500px;
+  margin: 10%;
 }
 
 .cardActive{
   border: 2px solid #003153;
+}
+
+@media only screen and (max-width: 768px) {
+  .chart{
+    height: 200px;
+    width: 100%;
+  }
+
+  .chart-container{
+    padding-right: 50px;
+  }
+
+  input[type=radio]{
+    margin: 50px 20px;
+    transform: scale(2);
+  }
+
+  .form{
+    font-size: 20px;
+    margin-top: 0;
+  }
+
+  .arrows{
+    justify-content: space-around;
+  }
+
+  .card{
+    margin-top: 50px;
+  }
 }

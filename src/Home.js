@@ -5,6 +5,7 @@ import { Card } from 'react-bootstrap';
 import './App.css'
 import Data from './data.json';
 import { Chart } from "react-google-charts";
+import { useMediaQuery } from 'react-responsive'
 
 export const Home = () => {
 
@@ -19,6 +20,7 @@ export const Home = () => {
     const [renderCards, setRenderCards] = useState([])
     const [average, setAverage] = useState()
     const [chartData, setChartData] = useState()
+    const isTabletOrMobile = useMediaQuery({ query: '(max-width: 768px)' })
     function getTempInF(temp){ return  temp * 9/5 + 32}
     function getTempInC(temp){ return  (temp - 32) * 5/9}
 
@@ -35,13 +37,17 @@ export const Home = () => {
     },[Data])
 
     useEffect(() => {
-        let renderedCards = [...Data]
-        const startIndex = (activeCard - 2) <= 0 ? 0 : (activeCard - 2)
-        const activeCardIndexList = renderCards.map(card => Data.indexOf(card))
-        if (!activeCardIndexList.find(index => index === activeCard))
-            setRenderCards(renderedCards.splice(startIndex, 3))
+        if(isTabletOrMobile) 
+            setRenderCards([Data[activeCard]])
+        else {
+            let renderedCards = [...Data]
+            const startIndex = (activeCard - 2) <= 0 ? 0 : (activeCard - 2)
+            const activeCardIndexList = renderCards.map(card => Data.indexOf(card))
+            if (!activeCardIndexList.find(index => index === activeCard))
+                setRenderCards([...renderedCards.splice(startIndex, 3)])
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[activeCard])
+    },[activeCard, isTabletOrMobile])
 
     function handleNext(){
         const newActiveCardIndex = ((activeCard+1) % Data.length)
@@ -78,45 +84,52 @@ export const Home = () => {
         return Object.values(dayTempData)
     }
 
+    const UserInputsComponent = () => {
+        return  <>
+                    <form className="form">
+                        <div>
+                            <label>
+                                <input
+                                type="radio"
+                                value={TemperatureTypeEnum._C}
+                                checked={isC}
+                                onChange={()=>{}}
+                                onClick={()=> handleTempType()}
+                                />
+                                Celsius
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input
+                                type="radio"
+                                value={TemperatureTypeEnum._F}
+                                checked={!isC}
+                                onClick={()=> handleTempType()}
+                                onChange={()=>{}}
+                                />
+                                Fahrenheit
+                            </label>
+                        </div>
+                    </form>
+                    <div className="arrows">
+                        <IconContext.Provider value={{ style: {fontSize: isTabletOrMobile ? '50px' :' 100px', color: "#003153"}}}>
+                            <div onClick={() => handleBack()}>
+                                <ImArrowLeft />
+                            </div>
+                        </IconContext.Provider>
+                        <IconContext.Provider value={{ style: {fontSize: isTabletOrMobile ? '50px' :' 100px', color: "#003153"}}}>
+                            <div onClick={() => handleNext()}>
+                                <ImArrowRight />
+                            </div>
+                        </IconContext.Provider>
+                    </div>
+                </>
+    }
+
     return  <div className="app">
-            <form className="form">
-                <div>
-                <label>
-                    <input
-                    type="radio"
-                    value={TemperatureTypeEnum._C}
-                    checked={isC}
-                    onChange={()=>{}}
-                    onClick={()=> handleTempType()}
-                    />
-                    Celsius
-                </label>
-                </div>
-                <div>
-                <label>
-                    <input
-                    type="radio"
-                    value={TemperatureTypeEnum._F}
-                    checked={!isC}
-                    onClick={()=> handleTempType()}
-                    onChange={()=>{}}
-                    />
-                    Fahrenheit
-                </label>
-                </div>
-            </form>
-            <div className="arrows">
-                <IconContext.Provider value={{ style: {fontSize: '100px', color: "#003153"}}}>
-                    <div onClick={() => handleBack()}>
-                        <ImArrowLeft />
-                    </div>
-                </IconContext.Provider>
-                <IconContext.Provider value={{ style: {fontSize: '100px', color: "#003153"}}}>
-                    <div onClick={() => handleNext()}>
-                        <ImArrowRight />
-                    </div>
-                </IconContext.Provider>
-            </div>
+            {!isTabletOrMobile &&
+            <UserInputsComponent/>}
             <div className="cardRow"> 
                 {renderCards.map((data) => {
                     const index = Data.indexOf(data)
@@ -147,6 +160,8 @@ export const Home = () => {
                     data={[["Time","Temperature"], ...chartData]}
                 />
             </div>}
+            {isTabletOrMobile &&
+            <UserInputsComponent/>}
         </div>
     
 }
